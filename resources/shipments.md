@@ -118,7 +118,7 @@ Attribute | Required | Default
 `shipment.contents`| **yes** |
 `shipment.estimated_value`| **yes** |
 `shipment.pickup_date`| **yes** |
-`shipment.liability_amount`|| no | Defaults to the free tier value given by the selected carrier.
+`shipment.liability_amount`| no | Defaults to the free tier value given by the selected carrier.
 `shipment.parcel.length`| **yes** |
 `shipment.parcel.width`| **yes** |
 `shipment.parcel.height`| **yes** |
