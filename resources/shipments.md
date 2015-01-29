@@ -248,4 +248,58 @@ TODO
 
 ## GET /shipments/:slug/track
 
-TODO
+### Parameters
+
+There are no parameters for this endpoint.
+
+### Response codes
+
+The possible status codes are:
+
+- `200` - the shipment was found and the available tracking information is in
+  the response body.
+- `404` - we could not find the shipment with the given identifier.
+
+### Response headers
+
+There are no relevant response headers to mention for this action.
+
+### Examples
+
+Successful tracking information:
+
+    $ curl -i -X GET \
+      -H 'Authorization: Token token="<YOUR_TOKEN>"' \
+      -H 'Content-Type: application/json' \
+      -H 'Accept:application/vnd.parcelbright.v1+json' \
+      https://api.sandbox.parcelbright.com/shipments/prb6c8c09d9/track
+
+    HTTP/1.1 200 OK
+    Connection: close
+    Date: Thu, 29 Jan 2015 17:03:25 GMT
+    Status: 200 OK
+    X-Frame-Options: SAMEORIGIN
+    X-Xss-Protection: 1; mode=block
+    X-Content-Type-Options: nosniff
+    X-Parcelbright-Media-Type: parcelbright.v1
+    Content-Type: application/json; charset=utf-8
+    Etag: W/"1fc5bda6713287cb11b514b6a9836ce8"
+    Cache-Control: max-age=0, private, must-revalidate
+    X-Request-Id: 6f44c429-1a20-4c76-b91f-00b7e419ccd2
+    X-Runtime: 2.495691
+    Via: 1.1 vegur
+
+    {
+      "events":[{
+        "timestamp":"2014-11-27T12:44:00+00:00",
+        "description":"Shipment picked up",
+        "detail":null,
+        "location":"GUADALAJARA - MEXICO"
+      },{
+        "timestamp":"2014-11-27T13:42:45+00:00",
+        "description":"Processed at GUADALAJARA - MEXICO",
+        "detail":null,
+        "location":"GUADALAJARA - MEXICO"
+      }]
+    }
+
