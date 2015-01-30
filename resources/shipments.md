@@ -102,7 +102,7 @@ Attribute | Type | Description
 
 ## POST /shipments
 
-This endoint allows you to create a shipment object. This is the first step of
+This endpoint allows you to create a shipment object. This is the first step of
 the booking process.
 
 Creating a shipment successfully returns a list of possible rates to choose
@@ -221,7 +221,7 @@ Attribute | Type | Description
 
 ### Response codes
 
-Error responses will return:
+The statuses returned by this endpoint are:
 
 - `201` - the shipment was successfully created.
 - `400` - the information provided is wrong, check the response body for errors.
@@ -240,7 +240,88 @@ path.
 
 ## GET /shipments/:slug
 
-TODO
+This endoint allows you to create a shipment object. This is the first step of
+the booking process.
+
+Fetching a valid but incomplete shipment returns a list of possible rates to
+choose from.
+
+### Parameters
+
+This endpoint does not have any parameters.
+
+### Response codes
+
+The statuses returned by this endpoint are:
+
+- `200` - the shipment was found and the details are in the body.
+- `304` - returned when a conditional get is submitted - it indicates that the
+  object didn't change and therefore no details are in the body.
+- `404` - we could not find the shipment with the given identifier.
+
+### Response headers
+
+In order to perform conditional GET requests, you will be interested in the
+following 2 headers returned:
+
+- `Etag: "5a526eb4bb0d7348563353bb0cd5c356"`
+- `Last-Modified: Thu, 29 Jan 2015 11:26:05 GMT`
+
+You can find more information on conditional GET requests [here](../Overview.md).
+
+### Examples
+
+Successful request:
+
+    $ curl -X GET -i \
+      -H 'Authorization: Token token="<YOUR_TOKEN>"' \
+      -H 'Content-Type: application/json' \
+      -H 'Accept:application/vnd.parcelbright.v1+json' \
+      https://api.sandbox.parcelbright.com/shipments/prbf6dfa2b1
+
+    HTTP/1.1 200 OK
+    Connection: close
+    Date: Thu, 29 Jan 2015 14:13:21 GMT
+    Status: 200 OK
+    X-Frame-Options: SAMEORIGIN
+    X-Xss-Protection: 1; mode=block
+    X-Content-Type-Options: nosniff
+    X-Parcelbright-Media-Type: parcelbright.v1
+    Etag: "5a526eb4bb0d7348563353bb0cd5c356"
+    Last-Modified: Thu, 29 Jan 2015 11:26:05 GMT
+    Content-Type: application/json; charset=utf-8
+    Cache-Control: max-age=0, private, must-revalidate
+    X-Request-Id: cfd8f530-21a8-4d52-8fdf-16777143e9ba
+    X-Runtime: 1.266285
+    Via: 1.1 vegur
+
+    {"shipment":{"state":"incomplete","customer_reference":"123455667", ... }}
+
+We have omitted the rest of the shipment information being returned.
+
+Unknown shipment identifier:
+
+    $ curl -i -X GET \
+      -H 'Authorization: Token token="<YOUR_TOKEN>"' \
+      -H 'Content-Type: application/json' \
+      -H 'Accept:application/vnd.parcelbright.v1+json' \
+      https://api.sandbox.parcelbright.com/shipments/unknown
+
+    HTTP/1.1 404 Not Found
+    Connection: close
+    Date: Thu, 29 Jan 2015 14:18:57 GMT
+    Status: 404 Not Found
+    X-Frame-Options: SAMEORIGIN
+    X-Xss-Protection: 1; mode=block
+    X-Content-Type-Options: nosniff
+    X-Parcelbright-Media-Type: parcelbright.v1
+    Content-Type: application/json; charset=utf-8
+    Cache-Control: no-cache
+    X-Request-Id: de335c0b-eaad-4c2b-ae08-5f92c418b706
+    X-Runtime: 0.499848
+    Via: 1.1 vegur
+
+    {"message":"Record not found"}
 
 ## POST /shipments/:slug/book
 
