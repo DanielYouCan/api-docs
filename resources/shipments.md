@@ -244,7 +244,160 @@ TODO
 
 ## POST /shipments/:slug/book
 
-TODO
+This endpoint allows one to book a shipment that was previously created on the
+system with a given rate code.
+
+The result will be a shipment with a label, consignment number, pickup
+confirmation code and customs form if needed.
+
+Depending on which carrier one chooses, the pickup confirmation code might not
+be available straight away, as there is an asynchronous job running to perform
+the booking.
+
+Similarly, if a shipment needs a customs form, this will be generated
+asynchronously and therefore you will have to get the shipment information a few
+seconds later to see the link to the customs form.
+
+This information will be communicated via the HTTP status codes returned by the
+API. More information can be found below.
+
+### Parameters
+
+Name | Type | Required | Description
+-----|------|-------------
+`rate_code`|`string` | **yes** | The code of the rate from the list returned by the create shipment action.
+`liability_amount`|`integer`| no | If you want extended liability on the shipment, this is where you set the prefered amount based on the liabilities endpoint.
+
+### Response codes
+
+The statuses returned by this endpoint are:
+
+- `201` - The shipment was booked successfully and no further action is needed.
+  The body of the request includes all the information needed to proceed.
+- `202` - The shipment was booked successfully, however we don't yet have all
+  the metadata needed by you. This means either the pickup is still being
+  confirmed or the customs form is still being generated. We advise to submit a
+  GET request a few seconds later to GET the shipment information again until
+  those fields are present.
+- `400` - There was a validation error, meaning the parameters submitted could
+  not be recognised or were missing. Alternatively, you may have insufficient
+  funda available. Please check the body of the response for
+  further details on the error.
+- `404` - We could not find the shipment with the given identifier.
+
+### Response headers
+
+There are no relevant response headers to mention for this action.
+
+### Examples
+
+Successful request:
+
+    $ curl -i -X POST \
+      -H 'Authorization: Token token="<YOUR_TOKEN>"'
+      -H 'Content-Type: application/json'
+      -H 'Accept:application/vnd.parcelbright.v1+json'
+      -d '{ "rate_code":"N" }' \
+      https://api.sandbox.parcelbright.com/shipments/prb6c8c09d9/book
+
+    HTTP/1.1 202 Accepted
+    Connection: close
+    Date: Thu, 29 Jan 2015 16:16:09 GMT
+    Status: 202 Accepted
+    X-Frame-Options: SAMEORIGIN
+    X-Xss-Protection: 1; mode=block
+    X-Content-Type-Options: nosniff
+    X-Parcelbright-Media-Type: parcelbright.v1
+    Location: /shipments/prb6c8c09d9
+    Content-Type: application/json; charset=utf-8
+    Cache-Control: no-cache
+    X-Request-Id: 34c85ecc-d243-43f4-bc19-05779fb0f873
+    X-Runtime: 7.280311
+    Via: 1.1 vegur
+
+    {
+      "shipment":{
+        "state":"completed",
+        "customer_reference":"123455667",
+        "contents":"books",
+        "estimated_value":"100.0",
+        "pickup_date":"2015-01-30",
+        "parcel":{
+          "length":"10.0",
+          "width":"10.0",
+          "height":"10.0",
+          "weight":"1.0"
+        },
+        "from_address":{
+          "name":"office",
+          "company":null,
+          "phone":"07800000000",
+          "line1":"19 Mandela Street",
+          "line2":null,
+          "town":"London",
+          "postcode":"NW1 0DU",
+          "country_code":"GB"
+        },
+        "to_address":{
+          "name":"John Doe",
+          "company":null,
+          "phone":"07411111111",
+          "line1":"7 Gloucester Square",
+          "line2":null,
+          "town":"London",
+          "postcode":"E2 8RS",
+          "country_code":"GB"
+        },
+        "service":{
+          "code":"N",
+          "carrier":"DHL",
+          "name":"DOMESTIC EXPRESS",
+          "price":"6.29",
+          "vat":"1.26",
+          "service_type":"collection"
+        },
+        "label":"https://pb-labels-sandbox.s3-eu-west-1.amazonaws.com/cofundit-limited/2015/1/29/prb6c8c09d9.pdf",
+        "customs":null,
+        "pickup_confirmation":null,
+        "consignment":"2482606136",
+        "liability_amount":50
+      }
+    }
+
+As you can see from the status code `202`, the shipment is pending a pickup
+confirmation which will happen in the next few seconds.
+
+Validation error for missing rate code:
+
+    $ curl -i -X POST \
+      -H 'Authorization: Token token="<YOUR_TOKEN>"' \
+      -H 'Content-Type: application/json' \
+      -H 'Accept:application/vnd.parcelbright.v1+json' \
+      https://api.sandbox.parcelbright.com/shipments/prb3d099690/book
+
+    HTTP/1.1 400 Bad Request
+    Connection: close
+    Date: Thu, 29 Jan 2015 15:06:43 GMT
+    Status: 400 Bad Request
+    X-Frame-Options: SAMEORIGIN
+    X-Xss-Protection: 1; mode=block
+    X-Content-Type-Options: nosniff
+    X-Parcelbright-Media-Type: parcelbright.v1
+    Content-Type: application/json; charset=utf-8
+    Cache-Control: no-cache
+    X-Request-Id: 636dd788-655e-46c5-9a5e-695a34783d65
+    X-Runtime: 0.060501
+    Via: 1.1 vegur
+
+    {
+      "message":"Validation error",
+      "errors":[{
+        "resource":"shipment",
+        "field":"rate_code",
+        "message":":rate_code parameter is missing",
+        "code":"parameters.rate_code_missing"
+      }]
+    }
 
 ## GET /shipments/:slug/track
 
