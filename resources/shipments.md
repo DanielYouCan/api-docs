@@ -537,3 +537,5 @@ Successful tracking information:
       }]
     }
 
+Please note that the array of events will be returned in ascending order by the
+timestamp field on each event.
