@@ -539,3 +539,15 @@ Successful tracking information:
 
 Please note that the array of events will be returned in ascending order by the
 timestamp field on each event.
+
+### Response object
+
+The tracking response includes an array of tracking events. Each event has the
+following details:
+
+Attribute | Type | Description
+-----|------|--------------
+`timestamp`|`datetime`| Date and time when the event was recorded by the carrier
+`description`|`string`| Human-readable description of the event
+`detail`|`string`| Any extra details about the event provided by the carrier, or `null` if none are available
+`location`|`string`| Location of the tracking event, or `null` if not relevant to this event
