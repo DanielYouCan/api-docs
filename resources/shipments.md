@@ -434,7 +434,7 @@ API. More information can be found below.
 ### Parameters
 
 Name | Type | Required | Description
------|------|-------------
+-----|------|-------------|---------
 `rate_code`|`string` | **yes** | The code of the rate from the list returned by the create shipment action.
 `liability_amount`|`integer`| no | If you want extended liability on the shipment, this is where you set the prefered amount based on the liabilities endpoint.
 
