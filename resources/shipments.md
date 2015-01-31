@@ -18,6 +18,13 @@ You can follow the status of the parcel by using our tracking endpoint and also
 get the shipment information from our show endpoint, which will get state
 updates.
 
+## Endpoints
+
+- Create a shipment: [POST /shipments](#post-shipments)
+- View a shipment: [GET /shipments/:slug](#get-shipmentsslug)
+- Book a shipment: [POST /shipments/:slug/book](#post-shipmentsslugbook)
+- Track a shipment: [GET /shipments/:slug/track](#get-shipmentsslugtrack)
+
 ## Object Definition
 
 These are the fields available on a shipment object.
