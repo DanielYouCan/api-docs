@@ -36,8 +36,8 @@ Attribute | Type | Description
 `contents`|`string`| The contents of the parcel.
 `estimated_value`|`decimal`| The estimated value of the parcel, in GBP, rounded to 2 decimal places. Example: 199.99.
 `pickup_date`|`date`| Validation rules for the pickup date can be found [here](#pickup-date)
-`label`|`string`| When available, it will be a link to a PDF file.
-`customs`|`string`| When available, it will be a link to a PDF file. More information on customs [below](#customs).
+`label_url`|`string`| When available, it will be a link to a PDF file.
+`customs_url`|`string`| When available, it will be a link to a PDF file. More information on customs [below](#customs).
 `pickup_confirmation`|`string`| Confirmation number for the pickup.
 `consignment`|`string`| The consignment number that we will use for tracking.
 `liability_amount`|`integer`| The extended liability amount selected. More information on the [liabilities' document](./liabilities.md).
@@ -229,7 +229,7 @@ A successful request:
     X-Runtime: 6.306231
     Via: 1.1 vegur
 
-    {"shipment":{"state":"incomplete","customer_reference":"123455667","contents":"books","estimated_value":"100.0","pickup_date":"2015-01-29","parcel":{"length":"10.0","width":"10.0","height":"10.0","weight":"1.0"},"from_address":{"name":"office","company":null,"phone":"07800000000","line1":"19 Mandela Street","line2":null,"town":"London","postcode":"NW1 0DU","country_code":"GB"},"to_address":{"name":"John Doe","company":null,"phone":"07411111111","line1":"7 Gloucester Square","line2":null,"town":"London","postcode":"E2 8RS","country_code":"GB"},"rates":[{"code":"N","carrier":"DHL","name":"DOMESTIC EXPRESS","price":"6.29","vat":"1.26","service_type":"collection","transit_days":"1","pickup_date":"2015-01-29","delivery_estimate":"2015-01-30T23:59:00+00:00","cutoff":"2015-01-29T14:00:00+00:00"},{"code":"1","carrier":"DHL","name":"DOMESTIC EXPRESS 12:00","price":"10.61","vat":"2.13","service_type":"collection","transit_days":"1","pickup_date":"2015-01-29","delivery_estimate":"2015-01-30T12:00:00+00:00","cutoff":"2015-01-29T14:00:00+00:00"}],"label":null,"customs":null,"pickup_confirmation":null,"consignment":null,"liability_amount":null}}
+    {"shipment":{"state":"incomplete","customer_reference":"123455667","contents":"books","estimated_value":"100.0","pickup_date":"2015-01-29","parcel":{"length":"10.0","width":"10.0","height":"10.0","weight":"1.0"},"from_address":{"name":"office","company":null,"phone":"07800000000","line1":"19 Mandela Street","line2":null,"town":"London","postcode":"NW1 0DU","country_code":"GB"},"to_address":{"name":"John Doe","company":null,"phone":"07411111111","line1":"7 Gloucester Square","line2":null,"town":"London","postcode":"E2 8RS","country_code":"GB"},"rates":[{"code":"N","carrier":"DHL","name":"DOMESTIC EXPRESS","price":"6.29","vat":"1.26","service_type":"collection","transit_days":"1","pickup_date":"2015-01-29","delivery_estimate":"2015-01-30T23:59:00+00:00","cutoff":"2015-01-29T14:00:00+00:00"},{"code":"1","carrier":"DHL","name":"DOMESTIC EXPRESS 12:00","price":"10.61","vat":"2.13","service_type":"collection","transit_days":"1","pickup_date":"2015-01-29","delivery_estimate":"2015-01-30T12:00:00+00:00","cutoff":"2015-01-29T14:00:00+00:00"}],"label_url":null,"customs_url":null,"pickup_confirmation":null,"consignment":null,"liability_amount":null}}
 
 Creating an international shipment:
 
@@ -294,7 +294,7 @@ Creating an international shipment:
       X-Runtime: 2.871230
       Via: 1.1 vegur
 
-      {"shipment":{"state":"incomplete","customer_reference":"123455667","contents":"books","estimated_value":"100.0","pickup_date":"2015-01-30","parcel":{"length":"10.0","width":"10.0","height":"10.0","weight":"1.0"},"from_address":{"name":"office","company":null,"phone":"07800000000","line1":"19 Mandela Street","line2":null,"town":"London","postcode":"NW1 0DU","country_code":"GB"},"to_address":{"name":"John Doe","company":null,"phone":"+1 999999999","line1":"2130 Fulton Street","line2":null,"town":"San Francisco","postcode":"94117-1049","country_code":"US"},"rates":[{"code":"D","carrier":"DHL","name":"EXPRESS WORLDWIDE","price":"13.30","vat":"0.00","service_type":"collection","transit_days":"3","pickup_date":"2015-01-30","delivery_estimate":"2015-02-02T23:59:00+00:00","cutoff":"2015-01-30T14:00:00+00:00"},{"code":"T","carrier":"DHL","name":"EXPRESS 12:00","price":"14.62","vat":"0.00","service_type":"collection","transit_days":"3","pickup_date":"2015-01-30","delivery_estimate":"2015-02-02T12:00:00+00:00","cutoff":"2015-01-30T14:00:00+00:00"},{"code":"L","carrier":"DHL","name":"EXPRESS 10:30","price":"19.64","vat":"0.00","service_type":"collection","transit_days":"3","pickup_date":"2015-01-30","delivery_estimate":"2015-02-02T10:30:00+00:00","cutoff":"2015-01-30T14:00:00+00:00"}],"service":null,"label":null,"customs":null,"pickup_confirmation":null,"consignment":null,"liability_amount":null}}
+      {"shipment":{"state":"incomplete","customer_reference":"123455667","contents":"books","estimated_value":"100.0","pickup_date":"2015-01-30","parcel":{"length":"10.0","width":"10.0","height":"10.0","weight":"1.0"},"from_address":{"name":"office","company":null,"phone":"07800000000","line1":"19 Mandela Street","line2":null,"town":"London","postcode":"NW1 0DU","country_code":"GB"},"to_address":{"name":"John Doe","company":null,"phone":"+1 999999999","line1":"2130 Fulton Street","line2":null,"town":"San Francisco","postcode":"94117-1049","country_code":"US"},"rates":[{"code":"D","carrier":"DHL","name":"EXPRESS WORLDWIDE","price":"13.30","vat":"0.00","service_type":"collection","transit_days":"3","pickup_date":"2015-01-30","delivery_estimate":"2015-02-02T23:59:00+00:00","cutoff":"2015-01-30T14:00:00+00:00"},{"code":"T","carrier":"DHL","name":"EXPRESS 12:00","price":"14.62","vat":"0.00","service_type":"collection","transit_days":"3","pickup_date":"2015-01-30","delivery_estimate":"2015-02-02T12:00:00+00:00","cutoff":"2015-01-30T14:00:00+00:00"},{"code":"L","carrier":"DHL","name":"EXPRESS 10:30","price":"19.64","vat":"0.00","service_type":"collection","transit_days":"3","pickup_date":"2015-01-30","delivery_estimate":"2015-02-02T10:30:00+00:00","cutoff":"2015-01-30T14:00:00+00:00"}],"service":null,"label_url":null,"customs_url":null,"pickup_confirmation":null,"consignment":null,"liability_amount":null}}
 
 ### Response object
 
@@ -533,8 +533,8 @@ Successful request:
           "vat":"1.26",
           "service_type":"collection"
         },
-        "label":"https://pb-labels-sandbox.s3-eu-west-1.amazonaws.com/cofundit-limited/2015/1/29/prb6c8c09d9.pdf",
-        "customs":null,
+        "label_url":"https://pb-labels-sandbox.s3-eu-west-1.amazonaws.com/cofundit-limited/2015/1/29/prb6c8c09d9.pdf",
+        "customs_url":null,
         "pickup_confirmation":null,
         "consignment":"2482606136",
         "liability_amount":50
@@ -568,7 +568,7 @@ Booking an international shipment:
     X-Runtime: 13.886867
     Via: 1.1 vegur
 
-    {"shipment":{"state":"completed","customer_reference":"123455667","contents":"books","estimated_value":"100.0","pickup_date":"2015-02-03","parcel":{"length":"10.0","width":"10.0","height":"10.0","weight":"1.0"},"from_address":{"name":"office","company":null,"phone":"07800000000","line1":"19 Mandela Street","line2":null,"town":"London","postcode":"NW1 0DU","country_code":"GB"},"to_address":{"name":"John Doe","company":null,"phone":"+1 999999999","line1":"2130 Fulton Street","line2":null,"town":"San Francisco","postcode":"94117-1049","country_code":"US"},"service":{"code":"D","carrier":"DHL","name":"EXPRESS WORLDWIDE","price":"13.30","vat":"0.00","service_type":"collection"},"label":"https://pb-labels-sandbox.s3-eu-west-1.amazonaws.com/cofundit-limited/2015/1/30/prba5c3b5aa.pdf","customs":null,"pickup_confirmation":null,"consignment":"2482609835","liability_amount":50}}
+    {"shipment":{"state":"completed","customer_reference":"123455667","contents":"books","estimated_value":"100.0","pickup_date":"2015-02-03","parcel":{"length":"10.0","width":"10.0","height":"10.0","weight":"1.0"},"from_address":{"name":"office","company":null,"phone":"07800000000","line1":"19 Mandela Street","line2":null,"town":"London","postcode":"NW1 0DU","country_code":"GB"},"to_address":{"name":"John Doe","company":null,"phone":"+1 999999999","line1":"2130 Fulton Street","line2":null,"town":"San Francisco","postcode":"94117-1049","country_code":"US"},"service":{"code":"D","carrier":"DHL","name":"EXPRESS WORLDWIDE","price":"13.30","vat":"0.00","service_type":"collection"},"label_url":"https://pb-labels-sandbox.s3-eu-west-1.amazonaws.com/cofundit-limited/2015/1/30/prba5c3b5aa.pdf","customs_url":null,"pickup_confirmation":null,"consignment":"2482609835","liability_amount":50}}
 
 The status code `202` means the customs document is still being generated. Try
 to fetch the shipment in a few seconds to get it.
