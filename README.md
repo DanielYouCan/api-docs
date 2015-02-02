@@ -3,7 +3,7 @@
 [ParcelBright](https://www.parcelbright.com/) is a one stop parcel delivery
 solution for businesses of all sizes.
 
-Besides the processing suite liked above, we also provide an
+Besides the processing suite linked above, we also provide an
 [API](http://developer.parcelbright.com/) for custom integrations to our
 platform.
 
