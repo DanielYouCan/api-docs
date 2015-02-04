@@ -37,7 +37,8 @@ Attribute | Type | Description
 `estimated_value`|`decimal`| The estimated value of the parcel, in GBP, rounded to 2 decimal places. Example: 199.99.
 `pickup_date`|`date`| Validation rules for the pickup date can be found [here](#pickup-date)
 `label_url`|`string`| When available, it will be a link to a PDF file.
-`customs_url`|`string`| When available, it will be a link to a PDF file. More information on customs [below](#customs).
+`customs_url`|`string`| When available, it will be a link to a PDF file.
+`customs`|`customs`| The customs information for international shipments. More information on customs [below](#customs).
 `pickup_confirmation`|`string`| Confirmation number for the pickup.
 `consignment`|`string`| The consignment number that we will use for tracking.
 `liability_amount`|`integer`| The extended liability amount selected. More information on the [liabilities' document](./liabilities.md).
@@ -82,6 +83,35 @@ shipment.
 
 You will have to fetch the shipment information later on in order to get that
 information. It takes about 1 minute to generate it.
+
+The object definition is:
+
+Attribute | Type | Description
+-----|------|--------------
+`country_of_manufacture`|`string`| The country code where the goods were manufactured.
+`reason`|`string`| A reason for the shipment. Allowed reasons are listed below.
+`sender_vat_number`|`string`| The VAT number of the sender, if available.
+`recipient_vat_number`|`string`| The VAT number of the recipient, if available.
+`contents`|`array`| A list of contents inside the box. Each one will be a Content object.
+
+The Content object includes the following attributes:
+
+Attribute | Type | Description
+-----|------|--------------
+`description`| A text description of the goods.
+`quantity`| The quantity inside the box.
+`value` | The value for each of the items.
+
+The allowed reasons for customs forms are:
+
+- SALE
+- GIFT
+- PERSONAL
+- DOCUMENTS
+- SAMPLE
+- REPAIR
+- REPLACEMENT
+- STOCK
 
 ### Parcel
 
@@ -148,26 +178,12 @@ Attribute | Required | Default
 `shipment.from_address.country_code`| **yes** |
 `shipment.customs_form.country_of_manufacture`| **conditional** |
 `shipment.customs_form.reason`| **conditional** |
+`shipment.customs_form.sender_vat_number`| no | N/A
+`shipment.customs_form.recipient_vat_number`| no | N/A
 `shipment.customs_form.contents`| **conditional** |
-
-The allowed reasons for customs forms are:
-
-- SALE
-- GIFT
-- PERSONAL
-- DOCUMENTS
-- SAMPLE
-- REPAIR
-- REPLACEMENT
-- STOCK
-
-Contents is an array where each element has the following attributes:
-
-Attribute | Required | Default
------|------|--------------
-`description`| **conditional** |
-`quantity`| **conditional** |
-`value` | **conditional** |
+`shipment.customs_form.contents[n].description`| **conditional** |
+`shipment.customs_form.contents[n].quantity`| **conditional** |
+`shipment.customs_form.contents[n].value`| **conditional** |
 
 As you can see, the parameters are nested. You can find examples below.
 Conditional customs form fields are mandatory on international shipments outside
@@ -229,7 +245,7 @@ A successful request:
     X-Runtime: 6.306231
     Via: 1.1 vegur
 
-    {"shipment":{"state":"incomplete","customer_reference":"123455667","contents":"books","estimated_value":"100.0","pickup_date":"2015-01-29","parcel":{"length":"10.0","width":"10.0","height":"10.0","weight":"1.0"},"from_address":{"name":"office","company":null,"phone":"07800000000","line1":"19 Mandela Street","line2":null,"town":"London","postcode":"NW1 0DU","country_code":"GB"},"to_address":{"name":"John Doe","company":null,"phone":"07411111111","line1":"7 Gloucester Square","line2":null,"town":"London","postcode":"E2 8RS","country_code":"GB"},"rates":[{"code":"N","carrier":"DHL","name":"DOMESTIC EXPRESS","price":"6.29","vat":"1.26","service_type":"collection","transit_days":"1","pickup_date":"2015-01-29","delivery_estimate":"2015-01-30T23:59:00+00:00","cutoff":"2015-01-29T14:00:00+00:00"},{"code":"1","carrier":"DHL","name":"DOMESTIC EXPRESS 12:00","price":"10.61","vat":"2.13","service_type":"collection","transit_days":"1","pickup_date":"2015-01-29","delivery_estimate":"2015-01-30T12:00:00+00:00","cutoff":"2015-01-29T14:00:00+00:00"}],"label_url":null,"customs_url":null,"pickup_confirmation":null,"consignment":null,"liability_amount":null}}
+    {"shipment":{"state":"incomplete","customer_reference":"123455667","contents":"books","estimated_value":"100.0","pickup_date":"2015-01-29","parcel":{"length":"10.0","width":"10.0","height":"10.0","weight":"1.0"},"from_address":{"name":"office","company":null,"phone":"07800000000","line1":"19 Mandela Street","line2":null,"town":"London","postcode":"NW1 0DU","country_code":"GB"},"to_address":{"name":"John Doe","company":null,"phone":"07411111111","line1":"7 Gloucester Square","line2":null,"town":"London","postcode":"E2 8RS","country_code":"GB"},"rates":[{"code":"N","carrier":"DHL","name":"DOMESTIC EXPRESS","price":"6.29","vat":"1.26","service_type":"collection","transit_days":"1","pickup_date":"2015-01-29","delivery_estimate":"2015-01-30T23:59:00+00:00","cutoff":"2015-01-29T14:00:00+00:00"},{"code":"1","carrier":"DHL","name":"DOMESTIC EXPRESS 12:00","price":"10.61","vat":"2.13","service_type":"collection","transit_days":"1","pickup_date":"2015-01-29","delivery_estimate":"2015-01-30T12:00:00+00:00","cutoff":"2015-01-29T14:00:00+00:00"}],"label_url":null,"customs_url":null,"customs":null,"pickup_confirmation":null,"consignment":null,"liability_amount":null}}
 
 Creating an international shipment:
 
@@ -248,7 +264,7 @@ Creating an international shipment:
               "customer_reference":"123455667",
               "estimated_value":100,
               "contents":"books",
-              "pickup_date":"2015-01-30",
+              "pickup_date":"2015-02-05",
               "from_address":{
                 "name":"office",
                 "postcode":"NW1 0DU",
@@ -278,23 +294,86 @@ Creating an international shipment:
           }'
       https://api.sandbox.parcelbright.com/shipments
 
-      HTTP/1.1 201 Created
-      Connection: close
-      Date: Fri, 30 Jan 2015 15:04:51 GMT
-      Status: 201 Created
-      X-Frame-Options: SAMEORIGIN
-      X-Xss-Protection: 1; mode=block
-      X-Content-Type-Options: nosniff
-      X-Parcelbright-Media-Type: parcelbright.v1
-      Location: /shipments/prba5c3b5aa
-      Content-Type: application/json; charset=utf-8
-      Etag: W/"eda7ada2a46972b8a4a6de088f861ec6"
-      Cache-Control: max-age=0, private, must-revalidate
-      X-Request-Id: 485db148-1898-4b5a-a146-f85bb5ee1b88
-      X-Runtime: 2.871230
-      Via: 1.1 vegur
+    HTTP/1.1 201 Created
+    Connection: close
+    Date: Wed, 04 Feb 2015 16:53:19 GMT
+    Status: 201 Created
+    X-Frame-Options: SAMEORIGIN
+    X-Xss-Protection: 1; mode=block
+    X-Content-Type-Options: nosniff
+    X-Parcelbright-Media-Type: parcelbright.v1
+    Location: /shipments/prb98924a12
+    Content-Type: application/json; charset=utf-8
+    Etag: W/"229eb7bd3b8622ddc6cd0c0afec6aa43"
+    Cache-Control: max-age=0, private, must-revalidate
+    X-Request-Id: 1b7ffac5-e0fd-412b-a0a7-0faefebfbae5
+    X-Runtime: 4.225388
+    Via: 1.1 vegur
 
-      {"shipment":{"state":"incomplete","customer_reference":"123455667","contents":"books","estimated_value":"100.0","pickup_date":"2015-01-30","parcel":{"length":"10.0","width":"10.0","height":"10.0","weight":"1.0"},"from_address":{"name":"office","company":null,"phone":"07800000000","line1":"19 Mandela Street","line2":null,"town":"London","postcode":"NW1 0DU","country_code":"GB"},"to_address":{"name":"John Doe","company":null,"phone":"+1 999999999","line1":"2130 Fulton Street","line2":null,"town":"San Francisco","postcode":"94117-1049","country_code":"US"},"rates":[{"code":"D","carrier":"DHL","name":"EXPRESS WORLDWIDE","price":"13.30","vat":"0.00","service_type":"collection","transit_days":"3","pickup_date":"2015-01-30","delivery_estimate":"2015-02-02T23:59:00+00:00","cutoff":"2015-01-30T14:00:00+00:00"},{"code":"T","carrier":"DHL","name":"EXPRESS 12:00","price":"14.62","vat":"0.00","service_type":"collection","transit_days":"3","pickup_date":"2015-01-30","delivery_estimate":"2015-02-02T12:00:00+00:00","cutoff":"2015-01-30T14:00:00+00:00"},{"code":"L","carrier":"DHL","name":"EXPRESS 10:30","price":"19.64","vat":"0.00","service_type":"collection","transit_days":"3","pickup_date":"2015-01-30","delivery_estimate":"2015-02-02T10:30:00+00:00","cutoff":"2015-01-30T14:00:00+00:00"}],"service":null,"label_url":null,"customs_url":null,"pickup_confirmation":null,"consignment":null,"liability_amount":null}}
+    {
+      "shipment":{
+        "state":"incomplete",
+        "customer_reference":"123455667",
+        "contents":"books",
+        "estimated_value":"100.0",
+        "pickup_date":"2015-02-05",
+        "parcel":{
+          "length":"10.0",
+          "width":"10.0",
+          "height":"10.0",
+          "weight":"1.0"
+        },
+        "from_address":{
+          "name":"office",
+          "company":null,
+          "phone":"07800000000",
+          "line1":"19 Mandela Street",
+          "line2":null,
+          "town":"London",
+          "postcode":"NW1 0DU",
+          "country_code":"GB"
+        },
+        "to_address":{
+          "name":"John Doe",
+          "company":null,
+          "phone":"+1 999999999",
+          "line1":"2130 Fulton Street",
+          "line2":null,
+          "town":"San Francisco",
+          "postcode":"94117-1049",
+          "country_code":"US"
+        },
+        "rates":[{
+          "code":"D",
+          "carrier":"DHL",
+          "name":"EXPRESS WORLDWIDE",
+          "price":"13.30",
+          "vat":"0.00",
+          "service_type":"collection",
+          "transit_days":"1",
+          "pickup_date":"2015-02-04",
+          "delivery_estimate":"2015-02-05T23:59:00+00:00",
+          "cutoff":"2015-02-04T14:00:00+00:00"
+        }],
+        "service":null,
+        "label_url":null,
+        "customs_url":null,
+        "customs":{
+          "country_of_manufacture":"GB",
+          "reason":"SALE",
+          "contents":[{
+            "description":"books",
+            "quantity":1,
+            "value":"100.00"
+          }],
+          "sender_vat_number":"N/A",
+          "recipient_vat_number":"N/A"
+        },
+        "pickup_confirmation":null,
+        "consignment":null,
+        "liability_amount":null
+      }
+    }
 
 ### Response object
 
@@ -535,6 +614,7 @@ Successful request:
         },
         "label_url":"https://pb-labels-sandbox.s3-eu-west-1.amazonaws.com/cofundit-limited/2015/1/29/prb6c8c09d9.pdf",
         "customs_url":null,
+        "customs":null,
         "pickup_confirmation":null,
         "consignment":"2482606136",
         "liability_amount":50
@@ -547,28 +627,86 @@ confirmation which will happen in the next few seconds.
 Booking an international shipment:
 
     $ curl -i -X POST \
-      -H 'Authorization: Token token="<YOUR_TOKEN>"' \
-      -H 'Content-Type: application/json' \
-      -H 'Accept:application/vnd.parcelbright.v1+json' \
-      -d '{ "rate_code":"D" }' \
-      "https://api.sandbox.parcelbright.com/shipments/prba5c3b5aa/book"
+    -H 'Authorization: Token token="<YOUR_TOKEN>"' \
+    -H 'Content-Type: application/json' \
+    -H 'Accept:application/vnd.parcelbright.v1+json' \
+    -d '{ "rate_code":"D" }' \
+    https://api.sandbox.parcelbright.com/shipments/prb98924a12/book
 
-    HTTP/1.1 202 Accepted
-    Connection: close
-    Date: Fri, 30 Jan 2015 15:19:51 GMT
-    Status: 202 Accepted
-    X-Frame-Options: SAMEORIGIN
-    X-Xss-Protection: 1; mode=block
-    X-Content-Type-Options: nosniff
-    X-Parcelbright-Media-Type: parcelbright.v1
-    Location: /shipments/prba5c3b5aa
-    Content-Type: application/json; charset=utf-8
-    Cache-Control: no-cache
-    X-Request-Id: 5bcf0650-fb35-49b2-b5a9-cb1914b220ad
-    X-Runtime: 13.886867
-    Via: 1.1 vegur
+      HTTP/1.1 202 Accepted
+      Connection: close
+      Date: Wed, 04 Feb 2015 17:22:12 GMT
+      Status: 202 Accepted
+      X-Frame-Options: SAMEORIGIN
+      X-Xss-Protection: 1; mode=block
+      X-Content-Type-Options: nosniff
+      X-Parcelbright-Media-Type: parcelbright.v1
+      Location: /shipments/prb98924a12
+      Content-Type: application/json; charset=utf-8
+      Cache-Control: no-cache
+      X-Request-Id: 02c5283e-f7eb-4f3b-9b98-1fd940cec6ac
+      X-Runtime: 2.462440
+      Via: 1.1 vegur
 
-    {"shipment":{"state":"completed","customer_reference":"123455667","contents":"books","estimated_value":"100.0","pickup_date":"2015-02-03","parcel":{"length":"10.0","width":"10.0","height":"10.0","weight":"1.0"},"from_address":{"name":"office","company":null,"phone":"07800000000","line1":"19 Mandela Street","line2":null,"town":"London","postcode":"NW1 0DU","country_code":"GB"},"to_address":{"name":"John Doe","company":null,"phone":"+1 999999999","line1":"2130 Fulton Street","line2":null,"town":"San Francisco","postcode":"94117-1049","country_code":"US"},"service":{"code":"D","carrier":"DHL","name":"EXPRESS WORLDWIDE","price":"13.30","vat":"0.00","service_type":"collection"},"label_url":"https://pb-labels-sandbox.s3-eu-west-1.amazonaws.com/cofundit-limited/2015/1/30/prba5c3b5aa.pdf","customs_url":null,"pickup_confirmation":null,"consignment":"2482609835","liability_amount":50}}
+      {
+        "shipment":{
+          "state":"completed",
+          "customer_reference":"123455667",
+          "contents":"books",
+          "estimated_value":"100.0",
+          "pickup_date":"2015-02-05",
+          "parcel":{
+            "length":"10.0",
+            "width":"10.0",
+            "height":"10.0",
+            "weight":"1.0"
+          },
+          "from_address":{
+            "name":"office",
+            "company":null,
+            "phone":"07800000000",
+            "line1":"19 Mandela Street",
+            "line2":null,
+            "town":"London",
+            "postcode":"NW1 0DU",
+            "country_code":"GB"
+          },
+          "to_address":{
+            "name":"John Doe",
+            "company":null,
+            "phone":"+1 999999999",
+            "line1":"2130 Fulton Street",
+            "line2":null,
+            "town":"San Francisco",
+            "postcode":"94117-1049",
+            "country_code":"US"
+          },
+          "service":{
+            "code":"D",
+            "carrier":"DHL",
+            "name":"EXPRESS WORLDWIDE",
+            "price":"13.30",
+            "vat":"0.00",
+            "service_type":"collection"
+          },
+          "label_url":"https://pb-labels-sandbox.s3-eu-west-1.amazonaws.com/cofundit-limited/2015/2/4/prb98924a12.pdf",
+          "customs_url":null,
+          "customs":{
+            "country_of_manufacture":"GB",
+            "reason":"SALE",
+            "contents":[{
+              "description":"books",
+              "quantity":1,
+              "value":"100.00"
+            }],
+            "sender_vat_number":"N/A",
+            "recipient_vat_number":"N/A"
+          },
+          "pickup_confirmation":null,
+          "consignment":"4791289775",
+          "liability_amount":50
+        }
+      }
 
 The status code `202` means the customs document is still being generated. Try
 to fetch the shipment in a few seconds to get it.
