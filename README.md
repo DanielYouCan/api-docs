@@ -1,4 +1,4 @@
-# ParcelBright API
+![](https://s3-eu-west-1.amazonaws.com/parcelbright-assets/parcelbright-dark-small.png)
 
 [ParcelBright](https://www.parcelbright.com/) is a one stop parcel delivery
 solution for businesses of all sizes.
