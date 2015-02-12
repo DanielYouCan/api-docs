@@ -24,6 +24,7 @@ updates.
 - View a shipment: [GET /shipments/:slug](#get-shipmentsslug)
 - Book a shipment: [POST /shipments/:slug/book](#post-shipmentsslugbook)
 - Track a shipment: [GET /shipments/:slug/track](#get-shipmentsslugtrack)
+- Cancel a shipment: [POST /shipments/:slug/cancel](#post-shipmentsslugcancel)
 
 ## Object Definition
 
@@ -814,3 +815,121 @@ Attribute | Type | Description
 `description`|`string`| Human-readable description of the event
 `detail`|`string`| Any extra details about the event provided by the carrier, or `null` if none are available
 `location`|`string`| Location of the tracking event, or `null` if not relevant to this event
+
+## POST /shipments/:slug/cancel
+
+### Parameters
+
+There are no parameters for this endpoint.
+
+### Response codes
+
+The possible status codes are:
+
+- `201` - the shipment was successfully cancelled;
+- `400` - there was an error cancelling the shipment;
+- `404` - we could not find the shipment with the given identifier.
+
+### Response headers
+
+There are no relevant response headers to mention for this action.
+
+### Examples
+
+Successful cancellation:
+
+    $ curl -i -X POST \
+      -H 'Authorization: Token token="18a958318f0c26f63e0e79122d378f19"' \
+      -H 'Content-Type: application/json' \
+      -H 'Accept:application/vnd.parcelbright.v1+json' \
+      https://api.sandbox.parcelbright.com/shipments/prb9dca8528/cancel
+
+    HTTP/1.1 201 Created
+    Connection: close
+    Date: Thu, 12 Feb 2015 17:46:27 GMT
+    Status: 201 Created
+    X-Frame-Options: SAMEORIGIN
+    X-Xss-Protection: 1; mode=block
+    X-Content-Type-Options: nosniff
+    X-Parcelbright-Media-Type: parcelbright.v1
+    Location: /shipments/prb9dca8528
+    Content-Type: application/json; charset=utf-8
+    Etag: W/"52726a4cc83833e6b85f30bebbeaba82"
+    Cache-Control: max-age=0, private, must-revalidate
+    X-Request-Id: 366d49cf-94cf-4691-8dba-6fe339978ab8
+    X-Runtime: 0.761176
+    Via: 1.1 vegur
+
+    {
+      "shipment":{
+        "state":"cancelled",
+        "customer_reference":"123455667",
+        "contents":"books",
+        "estimated_value":"100.0",
+        "pickup_date":"2015-02-13",
+        "parcel":{
+          "length":"10.0",
+          "width":"10.0",
+          "height":"10.0",
+          "weight":"1.0"
+        },
+        "from_address":{
+          "name":"office",
+          "company":null,
+          "phone":"07800000000",
+          "line1":"19 Mandela Street",
+          "line2":null,
+          "town":"London",
+          "postcode":"NW1 0DU",
+          "country_code":"GB"
+        },
+        "to_address":{
+          "name":"John Doe",
+          "company":null,
+          "phone":"07411111111",
+          "line1":"7 Gloucester Square",
+          "line2":null,
+          "town":"London",
+          "postcode":"E2 8RS",
+          "country_code":"GB"
+        },
+        "service":{
+          "code":"N",
+          "carrier":"DHL",
+          "name":"DOMESTIC EXPRESS",
+          "price":"6.29",
+          "vat":"1.26",
+          "service_type":"collection"
+        },
+        "label_url":"https://pb-labels-sandbox.s3-eu-west-1.amazonaws.com/cofundit-limited/2015/2/12/prb9dca8528.pdf",
+        "customs_url":null,
+        "customs":null,
+        "pickup_confirmation":"133",
+        "consignment":"4791321065",
+        "liability_amount":50
+      }
+    }
+
+Cannot cancel an already cancelled shipment:
+
+    $ curl -i -X POST
+      -H 'Authorization: Token token="18a958318f0c26f63e0e79122d378f19"'
+      -H 'Content-Type: application/json'
+      -H 'Accept:application/vnd.parcelbright.v1+json'
+      https://api.sandbox.parcelbright.com/shipments/prb9dca8528/cancel
+
+    HTTP/1.1 400 Bad Request
+    Connection: close
+    Date: Thu, 12 Feb 2015 17:50:01 GMT
+    Status: 400 Bad Request
+    X-Frame-Options: SAMEORIGIN
+    X-Xss-Protection: 1; mode=block
+    X-Content-Type-Options: nosniff
+    X-Parcelbright-Media-Type: parcelbright.v1
+    Content-Type: application/json; charset=utf-8
+    Cache-Control: no-cache
+    X-Request-Id: 4a140b15-e817-4c4a-99a3-ebfc6b7469b1
+    X-Runtime: 0.841947
+    Via: 1.1 vegur
+
+    {"message":"It is only possible to cancel completed shipments"}
