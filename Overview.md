@@ -24,11 +24,11 @@ By default, all requests receive the latest version of the API.
 We encourage you to explicitly request this version via the `Accept`
 header:
 
-  Accept: application/vnd.parcelbright.v1+json
+    Accept: application/vnd.parcelbright.v1+json
 
 The API responds with a header indicating the served version:
 
-  X-ParcelBright-Media-Type: parcelbright.v1
+    X-ParcelBright-Media-Type: parcelbright.v1
 
 When we release new versions, the number will increase and the default version
 will be the latest one.
