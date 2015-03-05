@@ -32,6 +32,7 @@ These are the fields available on a shipment object.
 
 Attribute | Type | Description
 -----|------|--------------
+`id`|`string`|Unique slug identifier for the shipment. Read-only.
 `state`|`string` | The state of the shipment. Valid states documented [here](#valid-states)
 `customer_reference`|`string` | A reference to your customer, free form.
 `contents`|`string`| The contents of the parcel.
@@ -74,7 +75,8 @@ time returned by the API is 9am, then the earliest pickup date will be tomorrow.
 Shipments outside the European Union will require a customs form. This is a
 declaration of the goods being sent and the reason for it.
 
-One has to print 3 copies of the customs form and:
+The sender has to print 3 copies of the customs form and:
+
 - give one copy to the courier on pickup
 - include the other 2 copies on the parcel
 
@@ -246,7 +248,69 @@ A successful request:
     X-Runtime: 6.306231
     Via: 1.1 vegur
 
-    {"shipment":{"state":"incomplete","customer_reference":"123455667","contents":"books","estimated_value":"100.0","pickup_date":"2015-01-29","parcel":{"length":"10.0","width":"10.0","height":"10.0","weight":"1.0"},"from_address":{"name":"office","company":null,"phone":"07800000000","line1":"19 Mandela Street","line2":null,"town":"London","postcode":"NW1 0DU","country_code":"GB"},"to_address":{"name":"John Doe","company":null,"phone":"07411111111","line1":"7 Gloucester Square","line2":null,"town":"London","postcode":"E2 8RS","country_code":"GB"},"rates":[{"code":"N","carrier":"DHL","name":"DOMESTIC EXPRESS","price":"6.29","vat":"1.26","service_type":"collection","transit_days":"1","pickup_date":"2015-01-29","delivery_estimate":"2015-01-30T23:59:00+00:00","cutoff":"2015-01-29T14:00:00+00:00"},{"code":"1","carrier":"DHL","name":"DOMESTIC EXPRESS 12:00","price":"10.61","vat":"2.13","service_type":"collection","transit_days":"1","pickup_date":"2015-01-29","delivery_estimate":"2015-01-30T12:00:00+00:00","cutoff":"2015-01-29T14:00:00+00:00"}],"label_url":null,"customs_url":null,"customs":null,"pickup_confirmation":null,"consignment":null,"liability_amount":null}}
+    {
+      "shipment": {
+        "id": "prbf6dfa2b1",
+        "state": "incomplete",
+        "customer_reference": "123455667",
+        "contents": "books",
+        "estimated_value": "100.0",
+        "pickup_date": "2015-01-29",
+        "parcel": { "length": "10.0", "width": "10.0", "height": "10.0", "weight": "1.0" },
+        "from_address": {
+          "name": "office",
+          "company": null,
+          "phone": "07800000000",
+          "line1": "19 Mandela Street",
+          "line2": null,
+          "town": "London",
+          "postcode": "NW1 0DU",
+          "country_code": "GB"
+        },
+        "to_address": {
+          "name": "John Doe",
+          "company": null,
+          "phone": "07411111111",
+          "line1": "7 Gloucester Square",
+          "line2": null,
+          "town": "London",
+          "postcode": "E2 8RS",
+          "country_code": "GB"
+        },
+        "rates": [
+          {
+            "code": "N",
+            "carrier": "DHL",
+            "name": "DOMESTIC EXPRESS",
+            "price": "6.29",
+            "vat": "1.26",
+            "service_type": "collection",
+            "transit_days": "1",
+            "pickup_date": "2015-01-29",
+            "delivery_estimate": "2015-01-30T23:59:00+00:00",
+            "cutoff": "2015-01-29T14:00:00+00:00"
+          },
+          {
+            "code": "1",
+            "carrier": "DHL",
+            "name": "DOMESTIC EXPRESS 12:00",
+            "price": "10.61",
+            "vat": "2.13",
+            "service_type": "collection",
+            "transit_days": "1",
+            "pickup_date": "2015-01-29",
+            "delivery_estimate": "2015-01-30T12:00:00+00:00",
+            "cutoff": "2015-01-29T14:00:00+00:00"
+          }
+        ],
+        "label_url": null,
+        "customs_url": null,
+        "customs": null,
+        "pickup_confirmation": null,
+        "consignment": null,
+        "liability_amount": null
+      }
+    }
 
 Creating an international shipment:
 
@@ -313,6 +377,7 @@ Creating an international shipment:
 
     {
       "shipment":{
+        "id":"prb98924a12",
         "state":"incomplete",
         "customer_reference":"123455667",
         "contents":"books",
@@ -411,13 +476,12 @@ The successful example above includes the following header in the response:
 
     Location: /shipments/prbf6dfa2b1
 
-This means one will be able to see the shipment attributes if one visits that
-path.
+The slug at the end of the header matches the `id` attribute of the shipment.
 
 ## GET /shipments/:slug
 
-This endoint allows you to create a shipment object. This is the first step of
-the booking process.
+This endpoint allows you to fetch the attributes for an existing shipment
+object.
 
 Fetching a valid but incomplete shipment returns a list of possible rates to
 choose from.
@@ -471,7 +535,7 @@ Successful request:
     X-Runtime: 1.266285
     Via: 1.1 vegur
 
-    {"shipment":{"state":"incomplete","customer_reference":"123455667", ... }}
+    {"shipment":{"id":"prbf6dfa2b1","state":"incomplete", ... }}
 
 We have omitted the rest of the shipment information being returned.
 
@@ -574,6 +638,7 @@ Successful request:
 
     {
       "shipment":{
+        "id":"prb6c8c09d9",
         "state":"completed",
         "customer_reference":"123455667",
         "contents":"books",
@@ -651,6 +716,7 @@ Booking an international shipment:
 
       {
         "shipment":{
+          "id":"prb98924a12",
           "state":"completed",
           "customer_reference":"123455667",
           "contents":"books",
@@ -862,6 +928,7 @@ Successful cancellation:
 
     {
       "shipment":{
+        "id":"prb9dca8528",
         "state":"cancelled",
         "customer_reference":"123455667",
         "contents":"books",
