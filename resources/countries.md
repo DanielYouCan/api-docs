@@ -5,6 +5,8 @@
 We provide a list of countries, including their name and code, so that you can
 use the correct country code when booking a shipment.
 
+Each country also has an `eu` boolean flag, indicating whether or not it is currently part of the European Union. This is to allow API users to determine whether a shipment requires a customs form. Customs forms are only required for shipments to countries which are outside the EU.
+
 Country codes returned via the API comply with the [ISO 3166
 alpha2](http://www.iso.org/iso/country_codes.htm) international standard.
 
@@ -37,6 +39,6 @@ Here is an example of a successful request:
     X-Runtime: 2.229218
     Via: 1.1 vegur
 
-    {"countries":[{"name":"United Kingdom","code":"GB"}, ... ]}
+    {"countries":[{"name":"United Kingdom","code":"GB","eu":true}, ... ]}
 
 We have ommited the entire list, however the API returns about 250 countries.
