@@ -116,6 +116,10 @@ The allowed reasons for customs forms are:
 - REPLACEMENT
 - STOCK
 
+Our [countries API](./countries.md) returns a list of country names, ISO codes,
+and a boolean flag for membership of the EU. This will allow you to
+programmatically determine whether you have to submit customs form fields.
+
 ### Parcel
 
 The parcel object includes details on the parcel dimensions.
