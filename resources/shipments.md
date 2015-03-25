@@ -59,6 +59,11 @@ returned | The shipment was successfully delivered, but was returned as per your
 
 ### Pickup Date
 
+By default, all shipments will have the soonest available pickup date, normally
+today or the next working day. However you can also choose a pickup date by
+specifying it when you create the shipment, and also when you book the
+shipment.
+
 The pickup date's format is YYYY-MM-DD. Please note that weekends and bank
 holidays are not allowed.
 
@@ -157,7 +162,7 @@ Attribute | Required | Default
 `shipment.customer_reference`| **yes** |
 `shipment.contents`| **yes** |
 `shipment.estimated_value`| **yes** |
-`shipment.pickup_date`| **yes** |
+`shipment.pickup_date`| no | Next available pickup date; either today or next working day.
 `shipment.liability_amount`| no | Defaults to the free tier value given by the selected carrier.
 `shipment.parcel.length`| **yes** |
 `shipment.parcel.width`| **yes** |
@@ -588,6 +593,7 @@ Name | Type | Required | Description
 -----|------|-------------|---------
 `rate_code`|`string` | **yes** | The code of the rate from the list returned by the create shipment action.
 `liability_amount`|`integer`| no | If you want extended liability on the shipment, this is where you set the prefered amount based on the liabilities endpoint.
+`pickup_date`|`date`| no | The date for the shipment to be picked up, only required if it is different from the default date.
 
 ### Response codes
 
