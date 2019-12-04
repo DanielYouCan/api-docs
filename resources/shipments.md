@@ -196,8 +196,9 @@ Attribute | Required | Default
 `shipment.customs_form.contents[n].description`| **conditional** |
 `shipment.customs_form.contents[n].quantity`| **conditional** |
 `shipment.customs_form.contents[n].value`| **conditional** |
+`carriers`| no | Empty array.
 
-As you can see, the parameters are nested. You can find examples below.
+As you can see, the parameters are nested except the carriers parameter. You can find examples below.
 Conditional customs form fields are mandatory on international shipments outside
 the EU.
 
@@ -447,6 +448,153 @@ Creating an international shipment:
         "pickup_confirmation":null,
         "consignment":null,
         "liability_amount":null
+      }
+    }
+    
+Using 'carriers' parameter to request for specified rates
+
+      $ curl -i -X POST \
+            -H 'Authorization: Token token="<YOUR_TOKEN>"' \
+            -H 'Content-Type: application/json' \
+            -H 'Accept:application/json' \
+            -d '{
+                  "shipment":{
+                    "parcel": {
+                      "length":10,
+                      "height":10,
+                      "width":10,
+                      "weight":1
+                    },
+                    "customer_reference":"123455667",
+                    "estimated_value":100,
+                    "contents":"books",
+                    "pickup_date":"2019-12-05",
+                    "from_address":{
+                      "name":"office",
+                      "postcode":"NW1 0DU",
+                      "town":"London",
+                      "phone":"07800000000",
+                      "line1":"19 Mandela Street",
+                      "country_code":"GB"
+                    },
+                    "to_address": {
+                      "name":"John Doe",
+                      "postcode":"M1 1EH",
+                      "town":"Manchester",
+                      "phone":"+1 999999999",
+                      "line1":"My Street 20",
+                      "country_code":"GB"
+                    }
+                  },
+                  "carriers": ["dhl", "myhermes"]
+                }'
+            https://api.sandbox.parcelbright.com/shipments
+
+    HTTP/1.1 201 Created
+    Connection: close
+    Date: Wed, 04 Dec 2019 11:40:45 GMT
+    Status: 201 Created
+    X-Frame-Options: SAMEORIGIN
+    X-Xss-Protection: 1; mode=block
+    X-Content-Type-Options: nosniff
+    X-Parcelbright-Media-Type: parcelbright.v1
+    Location: /shipments/prbff0c0c8e
+    Content-Type: application/json; charset=utf-8
+    Etag: W/"229eb7bd3b8622ddc6cd0c0afec6aa43"
+    Cache-Control: max-age=0, private, must-revalidate
+    X-Request-Id: 1b7ffac5-e0fd-412b-a0a7-0faefebfbae5
+    X-Runtime: 4.225388
+    Via: 1.1 vegur
+
+    {
+      "shipment":{
+        "id":"prbff0c0c8e",
+        "state":"incomplete",
+        "customer_reference":"123455667",
+        "contents":"books",
+        "estimated_value":"100.0",
+        "pickup_date":"2019-12-05",
+        "parcel":{
+          "length":"10.0",
+          "width":"10.0",
+          "height":"10.0",
+          "weight":"1.0"
+        },
+        "from_address":{
+          "name":"office",
+          "company":null,
+          "phone":"07800000000",
+          "line1":"19 Mandela Street",
+          "line2":null,
+          "town":"London",
+          "postcode":"NW1 0DU",
+          "country_code":"GB"
+        },
+        "to_address":{
+          "name":"John Doe",
+          "company":null,
+          "phone":"+1 999999999",
+          "line1":"My Street 20",
+          "line2":null,
+          "town":"Manchester",
+          "postcode":"M1 1EH",
+          "country_code":"GB"
+        },
+        "rates":[{
+                  "code":"Myhermes-GB",
+                  "carrier":"Myhermes",
+                  "name":"Hermes UK",
+                  "price":"2.33",
+                  "vat":"0.47",
+                  "service_type":"dropoff",
+                  "transit_days":"5",
+                  "pickup_date":null,
+                  "delivery_estimate":"2019-12-11T00:00:00+00:00",
+                  "cutoff":"2019-12-04T22:00:00+00:00"},
+               {
+                  "code":"Myhermes-GB+C",
+                  "carrier":"Myhermes",
+                  "name":"Hermes UK",
+                  "price":"2.74",
+                  "vat":"0.55",
+                  "service_type":"collection",
+                  "transit_days":"5",
+                  "pickup_date":null,"
+                  delivery_estimate":"2019-12-11T00:00:00+00:00",
+                  "cutoff":"2019-12-04T22:00:00+00:00"
+               },
+               {
+                  "code":"DHL-N/C","
+                  carrier":"DHL",
+                  "name":"EXPRESS DOMESTIC",
+                  "price":"30.00",
+                  "vat":"6.00",
+                  "service_type":"collection",
+                  "transit_days":"1",
+                  "pickup_date":"2019-12-04",
+                  "delivery_estimate":"2019-12-05T11:59:00+00:00",
+                  "cutoff":"2019-12-04T14:00:00+00:00"
+               },
+               {
+                  "code":"DHL-1/1",
+                  "carrier":"DHL",
+                  "name":"EXPRESS DOMESTIC 12:00",
+                  "price":"38.98",
+                  "vat":"7.80",
+                  "service_type":"collection",
+                  "transit_days":"1",
+                  "pickup_date":"2019-12-04",
+                  "delivery_estimate":"2019-12-05T12:00:00+00:00",
+                  "cutoff":"2019-12-04T14:00:00+00:00"
+               }],
+        "service":null,
+        "label_url":null,
+        "customs_url":null,
+        "customs":null,
+        "pickup_confirmation":null,
+        "consignment":null,
+        "liability_amount":null,
+        "outbound":true
       }
     }
 
